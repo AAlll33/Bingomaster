@@ -1,1 +1,1 @@
-# Bingomaster
+# OMEGA Bingo
