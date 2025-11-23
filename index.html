@@ -133,10 +133,10 @@
 
     /**
      * URL BASE DE GITHUB PARA LAS CARTAS
-     * **¡CORRECCIÓN AQUÍ!** Se eliminó /cartas/ para buscar en la raíz del repositorio, 
-     * donde está ubicado tu archivo 'carta_001.png'.
+     * **¡CORRECCIÓN APLICADA!** Se usa 'Maestro-del-bingo' en lugar de 'Bingomaster'
+     * para que coincida con el nombre real de tu repositorio.
      */
-    const GITHUB_CARDS_BASE_URL = "https://raw.githubusercontent.com/aallii33/Bingomaster/main/";
+    const GITHUB_CARDS_BASE_URL = "https://raw.githubusercontent.com/aallii33/Maestro-del-bingo/main/";
     
     // Lucide Icons (se importan como componentes React)
     const Search = (props) => createElement('svg', { ...props, xmlns: "http://www.w3.org/2000/svg", width: props.size || 24, height: props.size || 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", className: props.className || "" }, createElement('circle', { cx: 11, cy: 11, r: 8 }), createElement('path', { d: "m21 21-4.3-4.3" }));
