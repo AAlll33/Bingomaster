@@ -132,13 +132,11 @@
     const auth = getAuth(app);
 
     /**
-     * URL BASE DE GITHUB PARA LAS CARTAS (CORRECCIÓN CLAVE)
-     * Utiliza el formato raw.githubusercontent.com para acceder directamente a los archivos.
-     * Repositorio: AAlll33/bingomaster
-     * Rama: main
-     * Carpeta: bingo-cards
+     * URL BASE DE GITHUB PARA LAS CARTAS (CORRECCIÓN CLAVE BASADA EN TUS IMÁGENES)
+     * Ruta asumida: https://github.com/AAlll33/maestro-del-bingo/tree/main/cartones de bingo/tarjetas/carta_001.png
      */
-    const GITHUB_CARDS_BASE_URL = "https://raw.githubusercontent.com/AAlll33/bingomaster/main/bingo-cards/carta_"; 
+    // Se usa el formato 'raw' y se codifican los espacios con '%20' para que funcione la URL.
+    const GITHUB_CARDS_BASE_URL = "https://raw.githubusercontent.com/AAlll33/maestro-del-bingo/main/cartones%20de%20bingo/tarjetas/carta_"; 
 
     
     // Lucide Icons (se importan como componentes React)
@@ -291,13 +289,12 @@
       const handleSearch = async (e) => {
         e.preventDefault();
         
-        // --- CORRECCIÓN 1: Normaliza el código de búsqueda a 3 dígitos ---
+        // Normaliza el código de búsqueda a 3 dígitos (ej: '1' -> '001')
         const rawCode = searchCode.replace(/[^0-9]/g, ''); // Limpiar no números
         if(!rawCode) {
             showMessage('Por favor, ingresa un número de cartón.');
             return;
         }
-        // Usar padStart(3, '0') para buscar "1" como "001"
         const formattedCode = rawCode.padStart(3, '0');
         if(formattedCode.length > 3) {
              showMessage('El número de cartón no puede ser mayor a 999.');
@@ -308,12 +305,11 @@
         setFoundPlayer(null);
 
         try {
-          // El ID del documento en Firebase es "001", "012", "334", etc.
+          // Busca usando el ID de 3 dígitos (ej: "001", "334")
           const docRef = doc(db, "players", formattedCode);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
-            // El jugador encontrado ya tendrá la URL de la carta correcta
             setFoundPlayer(docSnap.data());
             setActiveTab('result');
           } else {
@@ -347,7 +343,7 @@
       const handleCreatePlayer = async (e) => {
         e.preventDefault();
         
-        // --- CORRECCIÓN 2: Asegurar y validar el ID a 3 dígitos ---
+        // Asegurar y validar el ID a 3 dígitos
         const rawId = newId.replace(/[^0-9]/g, ''); // Limpiar
         if(!rawId || rawId > 999 || rawId < 1) {
              showMessage("El número de cartón debe ser entre 001 y 999.");
@@ -357,8 +353,7 @@
         
         if(!newName || !formattedId) return;
         
-        // --- CORRECCIÓN 3: Construcción de la URL de la carta ---
-        // Usa la URL base corregida + ID formateado + extensión .png
+        // Construcción de la URL de la carta USANDO LA RUTA CORREGIDA
         const cardUrl = `${GITHUB_CARDS_BASE_URL}${formattedId}.png`; 
         
         setActionLoading(true);
@@ -372,16 +367,14 @@
               return;
           }
 
-          // Usamos setDoc para definir nosotros el ID del documento (ej: "001")
+          // Guardamos el documento con el ID de 3 dígitos y la URL correcta
           await setDoc(docRef, {
             id: formattedId,
             name: newName,
             createdAt: new Date().toISOString(),
-            // Guardamos la URL CORRECTA
             cardUrl: cardUrl 
           });
           setNewName('');
-          // El ID se recalculará con el onSnapshot
           showMessage(`✅ Cartón #${formattedId} creado/actualizado para ${newName}`);
           
         } catch (error) {
@@ -442,7 +435,7 @@
                   <input 
                     type="text" 
                     value={searchCode}
-                    // Permite hasta 3 dígitos, pero acepta 1, 2 o 3. La lógica de búsqueda lo formatea a 3.
+                    // Permite hasta 3 dígitos
                     onChange={(e) => setSearchCode(e.target.value.replace(/[^0-9]/g, ''))}
                     placeholder="001 a 999"
                     maxLength={3} 
@@ -523,7 +516,7 @@
                             <input 
                               type="text" 
                               value={newId}
-                              // Solo números, máximo 3 caracteres (aunque la lógica de create valida 999)
+                              // Solo números, máximo 3 caracteres
                               onChange={(e) => setNewId(e.target.value.replace(/[^0-9]/g, ''))} 
                               maxLength={3}
                               placeholder="001"
